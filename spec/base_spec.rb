@@ -84,4 +84,29 @@ describe Throttling do
       Throttling.for('foo').check_ip('127.0.0.1').should be_true
     end
   end
+
+  context do
+    before do
+      Throttling.limits = { 'foo' => {'limit' => 5, 'period' => 86400} }
+      @timestamp = 1334261569
+    end
+
+    describe 'key name' do
+      it 'should include type, value, name, and period start' do
+        Timecop.freeze(Time.at(@timestamp)) do
+          Throttling.for('foo').check_ip('127.0.0.1')
+        end
+        @storage.values.keys.first.should == 'throttle:foo:ip:127.0.0.1:global:15442'
+      end
+    end
+
+    describe 'key expiration' do
+      it 'should calculate expiration time' do
+        Timecop.freeze(Time.at(@timestamp)) do
+          Throttling.for('foo').check_ip('127.0.0.1')
+        end
+        @storage.values.values.first[:expires_in].should == 13631
+      end
+    end
+  end
 end
