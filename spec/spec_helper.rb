@@ -5,7 +5,7 @@ require 'timecop'
 class TestStorage
   attr_reader :values
 
-  def fetch(key, options, &block)
+  def fetch(key, options = {}, &block)
     @values ||= {}
     value = @values.fetch(key, &block)
     @values[key] = options.merge(:value => value.to_s)

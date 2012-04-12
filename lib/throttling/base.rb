@@ -1,4 +1,5 @@
 module Throttling
+  # Class implements throttling for a single action.
   class Base
     attr_accessor :action, :limits
 
@@ -10,7 +11,7 @@ module Throttling
       raise ArgumentError, "No Throttling.limits[#{action}] section found" unless limits
 
       # Convert simple limits to a hash
-      if @limits['limit'] && @limits['period']
+      if @limits[:limit] && @limits[:period]
         @limits = { 'global' => @limits }
       end
     end
@@ -28,8 +29,8 @@ module Throttling
       return true if !Throttling.enabled? || check_value.nil?
 
       limits.each do |period_name, params|
-        raise ArgumentError, "Invalid or no 'period' parameter in the limits[#{period_name}] config" if params['period'].to_i < 1
-        raise ArgumentError, "Invalid or no 'limit' parameter in the limits[#{period_name}] config" if params['limit'].nil? || params['limit'].to_i < 0
+        raise ArgumentError, "Invalid or no 'period' parameter in the limits[#{period_name}] config" if params[:period].to_i < 1
+        raise ArgumentError, "Invalid or no 'limit' parameter in the limits[#{period_name}] config" if params[:limit].nil? || params[:limit].to_i < 0
 
         period = params[:period].to_i
         key = hits_store_key(check_type, check_value, period_name, period)
