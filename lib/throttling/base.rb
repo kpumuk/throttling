@@ -12,7 +12,9 @@ module Throttling
 
       # Convert simple limits to a hash
       if @limits[:limit] && @limits[:period]
-        @limits = { 'global' => @limits }
+        @limits = [[ 'global', @limits ]]
+      else
+        @limits = @limits.sort_by { |name, params| params && params[:period] }
       end
     end
 

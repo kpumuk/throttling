@@ -71,17 +71,29 @@ describe Throttling do
 
   describe 'with multi-level limits' do
     before do
-      Throttling.limits = { 'foo' => { 'one' => { 'limit' => 5, 'period' => 2 }, 'two' => { 'limit' => 10, 'period' => 20 } } }
+      Throttling.limits = { 'foo' => { 'two' => { 'limit' => 10, 'period' => 20 }, 'one' => { 'limit' => 5, 'period' => 2 } } }
     end
 
-    it "should return false if at least one limit is reached" do
+    it 'should return false if at least one limit is reached' do
       @storage.should_receive(:fetch).and_return(1, 100)
       Throttling.for('foo').check_ip('127.0.0.1').should be_false
     end
 
-    it "should return true if none limits reached" do
+    it 'should return true if none limits reached' do
       @storage.should_receive(:fetch).and_return(1, 2)
       Throttling.for('foo').check_ip('127.0.0.1').should be_true
+    end
+
+    it 'should sort limits by period' do
+      @storage.should_receive(:fetch).ordered.with(/\:one\:/, anything).and_return(0)
+      @storage.should_receive(:fetch).ordered.with(/\:two\:/, anything).and_return(0)
+      Throttling.for('foo').check_ip('127.0.0.1').should be_true
+    end
+
+    it 'should return as soon as limit reached' do
+      @storage.should_receive(:fetch).ordered.with(/\:one\:/, anything).and_return(10)
+      @storage.should_not_receive(:fetch).with(/\:two\:/)
+      Throttling.for('foo').check_ip('127.0.0.1').should be_false
     end
   end
 
