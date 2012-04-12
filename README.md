@@ -36,13 +36,13 @@ The basic structure of the file is:
       period: 3600
 
     search_requests:
-      minutely_limit:
+      minutely:
         limit: 300
         period: 600
-      hourly_limit:
+      hourly:
         limit: 1000
         period: 3600
-      daily_limit:
+      daily:
         limit: 10000
         period: 86400
 
@@ -54,15 +54,15 @@ You can also specify limits as a Hash:
         :period => 3600
       },
       :search_requests => {
-        :minutely_limit => {
+        :minutely => {
           :limit  => 20,
           :period => 3600
         },
-        :hourly_limit => {
+        :hourly => {
           :limit  => 1000,
           :period => 3600
         },
-        :daily_limit =>
+        :daily =>
           :limit  => 10000,
           :period => 86400
         }
@@ -77,11 +77,11 @@ You can completely disable throttling by setting `enabled` to `false`:
 
 The basic usage of Throttling gem is following:
 
-    Throttling.for('user_signup').check('user_id', current_user.id) do
+    Throttling.for(:user_signup).check(:user_id, current_user.id) do
       # Do your stuff here
     end
 
-    if Throttling.for('user_signup').check('user_id', current_user.id)
+    if Throttling.for(:user_signup).check(:user_id, current_user.id)
       # Action allowed
     else
       # Action denied
@@ -89,8 +89,8 @@ The basic usage of Throttling gem is following:
 
 For convenience, there are some simplified methods:
 
-    Throttling.for('user_signup').check_ip(request.remote_ip)
-    Throttling.for('user_signup').check_user_id(current_user.id)
+    Throttling.for(:user_signup).check_ip(request.remote_ip)
+    Throttling.for(:user_signup).check_user_id(current_user.id)
 
 You can add more helpers like this:
 
