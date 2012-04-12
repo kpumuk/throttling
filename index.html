@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Throttling : Easy actions throttling for Ruby applications" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Throttling</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/kpumuk/throttling">Fork Me on GitHub</a>
+
+          <h1 id="project_title">Throttling</h1>
+          <h2 id="project_tagline">Easy actions throttling for Ruby applications</h2>
+
+          <section id="downloads">
+            <a class="zip_download_link" href="https://github.com/kpumuk/throttling/zipball/master">Download this project as a .zip file</a>
+            <a class="tar_download_link" href="https://github.com/kpumuk/throttling/tarball/master">Download this project as a tar.gz file</a>
+          </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p>Throttling gem provides basic, but very powerful way to throttle various user actions in your application. Basically you can specify how many times some action could be performed over a specified period(s) of time.</p>
+
+<h3>Installation</h3>
+
+<p>Add this line to your application's Gemfile:</p>
+
+<pre><code>gem 'throttling'
+</code></pre>
+
+<p>And then execute:</p>
+
+<pre><code>$ bundle
+</code></pre>
+
+<p>Or install it yourself as:</p>
+
+<pre><code>$ gem install throttling
+</code></pre>
+
+<h3>Configuration</h3>
+
+<p>You can configure Throttling parameters by accessing attributes of <code>Throttling</code> module. Currently it supports only Memcached through <code>Rails.cache</code>.</p>
+
+<pre><code>Throttling.storage = Rails.cache
+Throttling.logger = Rails.logger
+</code></pre>
+
+<p>Throttling limits could be stored in a configuration file in <code>config/throttling.yml</code>. You can also specify another file to read limits from:</p>
+
+<pre><code>Throttling.limits_config = "###{Rails.root}/config/throttling.yml"
+</code></pre>
+
+<p>The basic structure of the file is:</p>
+
+<pre><code>user_signup:
+  limit: 20
+  period: 3600
+
+search_requests:
+  minutely:
+    limit: 300
+    period: 600
+  hourly:
+    limit: 1000
+    period: 3600
+  daily:
+    limit: 10000
+    period: 86400
+</code></pre>
+
+<p>You can also specify limits as a Hash:</p>
+
+<pre><code>Throttling.limits = {
+  :user_signup =&gt; {
+    :limit  =&gt; 20,
+    :period =&gt; 3600
+  },
+  :search_requests =&gt; {
+    :minutely =&gt; {
+      :limit  =&gt; 20,
+      :period =&gt; 3600
+    },
+    :hourly =&gt; {
+      :limit  =&gt; 1000,
+      :period =&gt; 3600
+    },
+    :daily =&gt;
+      :limit  =&gt; 10000,
+      :period =&gt; 86400
+    }
+  }
+}
+</code></pre>
+
+<p>You can completely disable throttling by setting <code>enabled</code> to <code>false</code>:</p>
+
+<pre><code>Throttling.enabled = false
+</code></pre>
+
+<h3>Usage</h3>
+
+<p>The basic usage of Throttling gem is following:</p>
+
+<pre><code>Throttling.for(:user_signup).check(:user_id, current_user.id) do
+  ### Do your stuff here
+end
+
+if Throttling.for(:user_signup).check(:user_id, current_user.id)
+  ### Action allowed
+else
+  ### Action denied
+end
+</code></pre>
+
+<p>For convenience, there are some simplified methods:</p>
+
+<pre><code>Throttling.for(:user_signup).check_ip(request.remote_ip)
+Throttling.for(:user_signup).check_user_id(current_user.id)
+</code></pre>
+
+<p>You can add more helpers like this:</p>
+
+<pre><code>Throttling::Base.class_eval do
+  def check_user_id_and_document_id(user_id, doc_id)
+    check("user_id:doc_id", "###{user_id}:###{doc_id}")
+  end
+end
+</code></pre>
+
+<h3>Contributing</h3>
+
+<ol>
+<li>Fork it</li>
+<li>Create your feature branch (<code>git checkout -b my-new-feature</code>)</li>
+<li>Commit your changes (<code>git commit -am 'Added some feature'</code>)</li>
+<li>Push to the branch (<code>git push origin my-new-feature</code>)</li>
+<li>Create new Pull Request</li>
+</ol><h3>Who are the authors?</h3>
+
+<p>This plugin has been created in Scribd.com for our internal use and then the sources were opened for other people to use. Most of the code in this package has been developed by Oleksiy Kovyrin and Dmytro Shteflyuk for Scribd.com and is released under the MIT license. For more details, see the LICENSE file.</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Throttling maintained by <a href="https://github.com/kpumuk">kpumuk</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-1546917-5");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+
+  </body>
+</html>
