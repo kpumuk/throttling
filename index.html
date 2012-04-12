@@ -60,7 +60,7 @@ Throttling.logger = Rails.logger
 
 <p>Throttling limits could be stored in a configuration file in <code>config/throttling.yml</code>. You can also specify another file to read limits from:</p>
 
-<pre><code>Throttling.limits_config = "###{Rails.root}/config/throttling.yml"
+<pre><code>Throttling.limits_config = "#{Rails.root}/config/throttling.yml"
 </code></pre>
 
 <p>The basic structure of the file is:</p>
@@ -115,13 +115,13 @@ search_requests:
 <p>The basic usage of Throttling gem is following:</p>
 
 <pre><code>Throttling.for(:user_signup).check(:user_id, current_user.id) do
-  ### Do your stuff here
+  # Do your stuff here
 end
 
 if Throttling.for(:user_signup).check(:user_id, current_user.id)
-  ### Action allowed
+  # Action allowed
 else
-  ### Action denied
+  # Action denied
 end
 </code></pre>
 
@@ -135,7 +135,7 @@ Throttling.for(:user_signup).check_user_id(current_user.id)
 
 <pre><code>Throttling::Base.class_eval do
   def check_user_id_and_document_id(user_id, doc_id)
-    check("user_id:doc_id", "###{user_id}:###{doc_id}")
+    check("user_id:doc_id", "#{user_id}:#{doc_id}")
   end
 end
 </code></pre>
