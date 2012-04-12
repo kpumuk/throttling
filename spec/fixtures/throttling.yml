@@ -1,0 +1,14 @@
+user_signup:
+  limit: 20
+  period: 3600
+
+search_requests:
+  minutely:
+    limit: 300
+    period: 600
+  hourly:
+    limit: 1000
+    period: 3600
+  daily:
+    limit: 10000
+    period: 86400

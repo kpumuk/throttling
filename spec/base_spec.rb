@@ -69,7 +69,7 @@ describe Throttling do
     end
   end
 
-  describe "with multi-level limits" do
+  describe 'with multi-level limits' do
     before do
       Throttling.limits = { 'foo' => { 'one' => { 'limit' => 5, 'period' => 2 }, 'two' => { 'limit' => 10, 'period' => 20 } } }
     end
