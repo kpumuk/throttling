@@ -2,7 +2,7 @@
 
 [![Travis-CI build status](https://secure.travis-ci.org/kpumuk/throttling.png)](http://travis-ci.org/kpumuk/throttling)
 
-Throttling gem provides basic, but very powerful way to throttle various actions in your application. Basically you can specify how many times some action could be performed over a specified period(s) of time.
+Throttling gem provides basic, but very powerful way to throttle various user actions in your application. Basically you can specify how many times some action could be performed over a specified period(s) of time.
 
 ## Installation
 
