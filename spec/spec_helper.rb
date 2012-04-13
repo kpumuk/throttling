@@ -8,8 +8,9 @@ class TestStorage
   def fetch(key, options = {}, &block)
     @values ||= {}
     value = @values.fetch(key, &block)
-    @values[key] = options.merge(:value => value.to_s)
-    value
+    value = { :value => value.to_s } unless Hash === value
+    @values[key] = value.merge(options)
+    value[:value]
   end
 
   def increment(key)

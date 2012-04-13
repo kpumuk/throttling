@@ -35,11 +35,11 @@ module Throttling
 
       limits.each do |period_name, params|
         period = params[:period].to_i
-        limit  = params[:limit].to_i
+        limit  = params[:limit].nil? ? nil : params[:limit].to_i
         values = params[:values]
 
-        raise ArgumentError, "Invalid or no 'period' parameter in the limits[#{period_name}] config" if period < 1
-        raise ArgumentError, "Invalid or no 'limit' parameter in the limits[#{period_name}] config"  if limit < 1 && !values
+        raise ArgumentError, "Invalid or no 'period' parameter in the limits[#{action}][#{period_name}] config: #{limit.inspect}" if period < 1
+        raise ArgumentError, "Invalid 'limit' parameter in the limits[#{action}][#{period_name}] config: #{limit.inspect}" if !limit.nil? && limit < 0
 
         key = hits_store_key(check_type, check_value, period_name, period)
 
@@ -56,7 +56,7 @@ module Throttling
           end
         else
           # Over limit?
-          return false if hits > limit
+          return false if !limit.nil? && hits >= limit
         end
 
         Throttling.storage.increment(key) if auto_increment

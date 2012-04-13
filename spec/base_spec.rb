@@ -18,9 +18,16 @@ describe Throttling do
           @t.send(check_method, nil).should be_true
         end
 
-        it 'should raise an exception if no limit specified in configs' do
+        it 'should return true if no limit specified in configs' do
           Throttling.limits['foo']['limit'] = nil
-          lambda { @t.send(check_method, valid_value) }.should raise_error(ArgumentError)
+          @storage.should_receive(:fetch).and_return(1000)
+          @t.send(check_method, valid_value).should be_true
+        end
+
+        it 'should return false if limit is 0' do
+          Throttling.limits['foo']['limit'] = 0
+          @storage.should_receive(:fetch).and_return(0)
+          @t.send(check_method, valid_value).should be_false
         end
 
         it 'should raise an exception if no period specified in configs' do
@@ -53,16 +60,22 @@ describe Throttling do
             @t.send(check_method, valid_value)
           end
 
-          it 'should increase hit counter when values equals to limit' do
+          it 'should not increase hit counter when values equals to limit' do
             @storage.should_receive(:fetch).and_return(Throttling.limits['foo']['limit'])
-            @storage.should_receive(:increment)
+            @storage.should_not_receive(:increment)
             @t.send(check_method, valid_value)
           end
 
-          it 'should increase hit counter when values equals to limit + 1' do
+          it 'should not increase hit counter when values equals to limit + 1' do
             @storage.should_receive(:fetch).and_return(Throttling.limits['foo']['limit'] + 1)
             @storage.should_not_receive(:increment)
             @t.send(check_method, valid_value)
+          end
+
+          it 'should allow exactly limit actions' do
+            5.times { @t.send(check_method, valid_value).should be_true }
+            @storage.should_not_receive(:increment)
+            @t.send(check_method, valid_value).should be_false
           end
         end
       end

@@ -1,3 +1,14 @@
+## 0.3.1 (April 13, 2012)
+
+Features:
+
+  - When limit is omitted, no limits will be enforced (`check` always returns true)
+
+Bugfixes:
+
+  - Fixed bug when action was allowed `limit + 1` times
+  - When limit is 0, `check` should always return `false`
+
 ## 0.3.0 (April 13, 2012)
 
 Features:
