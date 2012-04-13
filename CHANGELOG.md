@@ -1,3 +1,9 @@
+## 0.3.0 (April 13, 2012)
+
+Features:
+
+  - Added ability to retrieve custom value based on number of actions performed in a period of time
+
 ## 0.2.0 (April 12, 2012)
 
 Bugfixes:

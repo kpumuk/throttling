@@ -46,6 +46,34 @@ The basic structure of the file is:
         limit: 10000
         period: 86400
 
+    request_priority:
+      period: 86400
+      default_value: 25
+      values:
+        high_priority:
+          limit: 5
+          value: 10
+        medium_priority:
+          limit: 15
+          value: 15
+        low_priority:
+          limit: 100
+          value: 20
+
+This example covers three different scenarios:
+
+1. Single period. In this case only 20 actions will be allowed in a period of
+   one hour (3600 seconds).
+
+2. Multiple periods. Action will be allowed to perform 300 times in 10 minutes,
+   1000 times an hour, and 10000 times a day.
+
+3. This special case covers following scenario: based on the number of actions,
+   it returns a value, or default value when largest limit is reached. In this
+   case it will return 10, when there were 5 or less requests (including current one),
+   15 for up to 15 requests, 20 for up to 100 requests, and 25 when there were
+   more than 100 requests.
+
 You can also specify limits as a Hash:
 
     Throttling.limits = {
@@ -99,6 +127,59 @@ You can add more helpers like this:
         check("user_id:doc_id", "#{user_id}:#{doc_id}")
       end
     end
+
+## Use cases
+
+### Limiting number of sign-ups
+
+    user_signup:
+      limit: 20
+      period: 3600
+
+Limit the number of sign-ups to 20 per hour per IP address:
+
+    Throttling.for('user_signup').check_ip(request.remote_ip)
+
+### Limiting number of document uploads
+
+    document_uploads:
+      minutely:
+        limit: 5
+        period: 600
+      hourly:
+        limit: 10
+        period: 3600
+      daily:
+        limit: 50
+        period: 86400
+
+In this case user will be allowed to upload 5 documents in 10 minutes, 10 documents
+in an hour, or 50 documents a day:
+
+    Throttling.for('document_uploads').check_user_id(current_user.id)
+
+### Prioritizing uploads based on number of uploads
+
+    document_priorities:
+      period: 86400
+      default_value: 25
+      values:
+        high_priority:
+          limit: 5
+          value: 10
+        medium_priority:
+          limit: 15
+          value: 15
+        low_priority:
+          limit: 100
+          value: 20
+
+All documents could be prioritized based on the number of uploads: if user uploads
+less than 5 documents a day, they all will have priority 10. Next 10 documents
+(first five keep their original priority) will receive priority 15. Documents
+16 to 100 will get priority 20, and everything else will get priority 25.
+
+    Throttling.for('document_priorities').check_user_id(current_user.id)
 
 ## Contributing
 

@@ -12,3 +12,17 @@ search_requests:
   daily:
     limit: 10000
     period: 86400
+
+request_priority:
+  period: 86400
+  default_value: 25
+  values:
+    high_priority:
+      limit: 5
+      value: 10
+    medium_priority:
+      limit: 15
+      value: 15
+    low_priority:
+      limit: 100
+      value: 20

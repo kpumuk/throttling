@@ -97,6 +97,50 @@ describe Throttling do
     end
   end
 
+  context 'with values specified' do
+    before do
+      Throttling.limits_config = File.expand_path('../fixtures/throttling.yml', __FILE__)
+    end
+
+    it 'should return value when limit is not reached' do
+      @storage.should_receive(:fetch).and_return(0)
+      Throttling.for('request_priority').check_ip('127.0.0.1').should == 10
+      @storage.should_receive(:fetch).and_return(4)
+      Throttling.for('request_priority').check_ip('127.0.0.1').should == 10
+
+      @storage.should_receive(:fetch).and_return(5)
+      Throttling.for('request_priority').check_ip('127.0.0.1').should == 15
+      @storage.should_receive(:fetch).and_return(14)
+      Throttling.for('request_priority').check_ip('127.0.0.1').should == 15
+
+      @storage.should_receive(:fetch).and_return(15)
+      Throttling.for('request_priority').check_ip('127.0.0.1').should == 20
+      @storage.should_receive(:fetch).and_return(99)
+      Throttling.for('request_priority').check_ip('127.0.0.1').should == 20
+
+      @storage.should_receive(:fetch).and_return(100)
+      Throttling.for('request_priority').check_ip('127.0.0.1').should == 25
+      @storage.should_receive(:fetch).and_return(1000)
+      Throttling.for('request_priority').check_ip('127.0.0.1').should == 25
+    end
+
+    it 'should increase hit counter' do
+      @storage.should_receive(:fetch).and_return(4)
+      @storage.should_receive(:increment)
+      Throttling.for('request_priority').check_ip('127.0.0.1')
+
+      @storage.should_receive(:fetch).and_return(1000)
+      @storage.should_receive(:increment)
+      Throttling.for('request_priority').check_ip('127.0.0.1')
+    end
+
+    it 'should return false when highest limit reached' do
+      Throttling.limits['request_priority'].delete('default_value')
+      @storage.should_receive(:fetch).and_return(1000)
+      Throttling.for('request_priority').check_ip('127.0.0.1').should be_false
+    end
+  end
+
   context do
     before do
       Throttling.limits = { 'foo' => {'limit' => 5, 'period' => 86400} }

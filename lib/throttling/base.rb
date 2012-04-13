@@ -11,7 +11,10 @@ module Throttling
       raise ArgumentError, "No Throttling.limits[#{action}] section found" unless limits
 
       # Convert simple limits to a hash
-      if @limits[:limit] && @limits[:period]
+      if @limits[:period]
+        if @limits[:values]
+          @limits[:values] = @limits[:values].sort_by { |name, params| params && params[:limit] }
+        end
         @limits = [[ 'global', @limits ]]
       else
         @limits = @limits.sort_by { |name, params| params && params[:period] }
@@ -31,19 +34,33 @@ module Throttling
       return true if !Throttling.enabled? || check_value.nil?
 
       limits.each do |period_name, params|
-        raise ArgumentError, "Invalid or no 'period' parameter in the limits[#{period_name}] config" if params[:period].to_i < 1
-        raise ArgumentError, "Invalid or no 'limit' parameter in the limits[#{period_name}] config" if params[:limit].nil? || params[:limit].to_i < 0
-
         period = params[:period].to_i
+        limit  = params[:limit].to_i
+        values = params[:values]
+
+        raise ArgumentError, "Invalid or no 'period' parameter in the limits[#{period_name}] config" if period < 1
+        raise ArgumentError, "Invalid or no 'limit' parameter in the limits[#{period_name}] config"  if limit < 1 && !values
+
         key = hits_store_key(check_type, check_value, period_name, period)
 
         # Retrieve current value
-        hits = Throttling.storage.fetch(key, :expires_in => hits_store_ttl(period), :raw => true) { '0' }
+        hits = Throttling.storage.fetch(key, :expires_in => hits_store_ttl(period), :raw => true) { '0' }.to_i
 
-        # Over limit?
-        return false if hits.to_i > params[:limit].to_i
+        if values
+          value = params[:default_value] || false
+          values.each do |value_name, value_params|
+            if hits < value_params[:limit].to_i
+              value = value_params[:value] || value_params[:default_value] || false
+              break
+            end
+          end
+        else
+          # Over limit?
+          return false if hits > limit
+        end
 
         Throttling.storage.increment(key) if auto_increment
+        return value if values
       end
 
       return true
