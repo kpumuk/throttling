@@ -15,19 +15,19 @@ describe Throttling do
     { :check_ip => '127.0.0.1', :check_user_id => 123 }.each do |check_method, valid_value|
       describe check_method do
         it 'should return true for nil check_values' do
-          @t.send(check_method, nil).should be_true
+          @t.send(check_method, nil).should be_truthy
         end
 
         it 'should return true if no limit specified in configs' do
           Throttling.limits['foo']['limit'] = nil
           @storage.should_receive(:fetch).and_return(1000)
-          @t.send(check_method, valid_value).should be_true
+          @t.send(check_method, valid_value).should be_truthy
         end
 
         it 'should return false if limit is 0' do
           Throttling.limits['foo']['limit'] = 0
           @storage.should_receive(:fetch).and_return(0)
-          @t.send(check_method, valid_value).should be_false
+          @t.send(check_method, valid_value).should be_falsey
         end
 
         it 'should raise an exception if no period specified in configs' do
@@ -45,12 +45,12 @@ describe Throttling do
 
         it 'should return true if throttling limit is not passed' do
           @storage.should_receive(:fetch).and_return(1)
-          @t.send(check_method, valid_value).should be_true
+          @t.send(check_method, valid_value).should be_truthy
         end
 
         it 'should return false if throttling limit is passed' do
           @storage.should_receive(:fetch).and_return(Throttling.limits['foo']['limit'] + 1)
-          @t.send(check_method, valid_value).should be_false
+          @t.send(check_method, valid_value).should be_falsey
         end
 
         context 'around limit' do
@@ -73,9 +73,9 @@ describe Throttling do
           end
 
           it 'should allow exactly limit actions' do
-            5.times { @t.send(check_method, valid_value).should be_true }
+            5.times { @t.send(check_method, valid_value).should be_truthy }
             @storage.should_not_receive(:increment)
-            @t.send(check_method, valid_value).should be_false
+            @t.send(check_method, valid_value).should be_falsey
           end
         end
       end
@@ -89,24 +89,24 @@ describe Throttling do
 
     it 'should return false if at least one limit is reached' do
       @storage.should_receive(:fetch).and_return(1, 100)
-      Throttling.for('foo').check_ip('127.0.0.1').should be_false
+      Throttling.for('foo').check_ip('127.0.0.1').should be_falsey
     end
 
     it 'should return true if none limits reached' do
       @storage.should_receive(:fetch).and_return(1, 2)
-      Throttling.for('foo').check_ip('127.0.0.1').should be_true
+      Throttling.for('foo').check_ip('127.0.0.1').should be_truthy
     end
 
     it 'should sort limits by period' do
       @storage.should_receive(:fetch).ordered.with(/\:one\:/, anything).and_return(0)
       @storage.should_receive(:fetch).ordered.with(/\:two\:/, anything).and_return(0)
-      Throttling.for('foo').check_ip('127.0.0.1').should be_true
+      Throttling.for('foo').check_ip('127.0.0.1').should be_truthy
     end
 
     it 'should return as soon as limit reached' do
       @storage.should_receive(:fetch).ordered.with(/\:one\:/, anything).and_return(10)
       @storage.should_not_receive(:fetch).with(/\:two\:/)
-      Throttling.for('foo').check_ip('127.0.0.1').should be_false
+      Throttling.for('foo').check_ip('127.0.0.1').should be_falsey
     end
   end
 
@@ -150,7 +150,7 @@ describe Throttling do
     it 'should return false when highest limit reached' do
       Throttling.limits['request_priority'].delete('default_value')
       @storage.should_receive(:fetch).and_return(1000)
-      Throttling.for('request_priority').check_ip('127.0.0.1').should be_false
+      Throttling.for('request_priority').check_ip('127.0.0.1').should be_falsey
     end
   end
 
