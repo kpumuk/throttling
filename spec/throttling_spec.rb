@@ -11,8 +11,8 @@ describe Throttling do
     end
 
     it 'should be enabled' do
-      Throttling.enabled?.should be_true
-      Throttling.enabled.should be_true
+      Throttling.enabled?.should be_truthy
+      Throttling.enabled.should be_truthy
     end
 
     it 'should set config file path' do
@@ -36,7 +36,7 @@ describe Throttling do
     end
 
     it 'should allow to change logger' do
-      mock = Throttling.logger = mock('Logger')
+      mock = Throttling.logger = double('Logger')
       Throttling.logger.should be(mock)
     end
 

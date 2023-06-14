@@ -96,7 +96,7 @@ module Throttling
     private
 
     def load_config(path)
-      return nil unless File.exists?(path)
+      return nil unless File.exist?(path)
       YAML.load_file(path).with_indifferent_access
     end
   end
