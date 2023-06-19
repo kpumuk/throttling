@@ -1,6 +1,8 @@
 # Throttling
 
-[![Travis-CI build status](https://secure.travis-ci.org/kpumuk/throttling.png)](http://travis-ci.org/kpumuk/throttling)
+[![Gem Version](https://badge.fury.io/rb/throttling.svg)](https://badge.fury.io/rb/throttling)
+[![Gem Downloads](https://img.shields.io/gem/dt/throttling.svg)](https://badge.fury.io/rb/throttling)
+[![Changelog](https://img.shields.io/badge/Changelog-latest-blue.svg)](https://github.com/kpumuk/throttling/blob/main/CHANGELOG.md)
 
 Throttling gem provides basic, but very powerful way to throttle various user actions in your application. Basically you can specify how many times some action could be performed over a specified period(s) of time.
 
