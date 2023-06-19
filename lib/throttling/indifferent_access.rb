@@ -109,11 +109,17 @@ module Throttling
         super(convert_key(key))
       end
 
-      def stringify_keys! = self
+      def stringify_keys!
+        self
+      end
 
-      def symbolize_keys! = self
+      def symbolize_keys!
+        self
+      end
 
-      def to_options! = self
+      def to_options!
+        self
+      end
 
       # Convert to a Hash with String keys.
       def to_hash
