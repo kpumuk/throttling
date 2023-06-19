@@ -84,7 +84,7 @@ module Throttling
       #   hash.values_at("a", "b") # => ["x", "y"]
       #
       def values_at(*indices)
-        indices.collect {|key| self[convert_key(key)]}
+        indices.collect { |key| self[convert_key(key)] }
       end
 
       # Returns an exact copy of the hash.
@@ -95,7 +95,7 @@ module Throttling
       # Merges the instantized and the specified hashes together, giving precedence to the values from the second hash
       # Does not overwrite the existing hash.
       def merge(hash)
-        self.dup.update(hash)
+        dup.update(hash)
       end
 
       # Performs the opposite of merge, with the keys and values from the first hash taking precedence over the second.
@@ -109,9 +109,11 @@ module Throttling
         super(convert_key(key))
       end
 
-      def stringify_keys!; self end
-      def symbolize_keys!; self end
-      def to_options!; self end
+      def stringify_keys! = self
+
+      def symbolize_keys! = self
+
+      def to_options! = self
 
       # Convert to a Hash with String keys.
       def to_hash
@@ -119,31 +121,32 @@ module Throttling
       end
 
       protected
-        def convert_key(key)
-          key.kind_of?(Symbol) ? key.to_s : key
-        end
 
-        def convert_value(value)
-          case value
-          when Hash
-            value.with_indifferent_access
-          when Array
-            value.collect { |e| e.is_a?(Hash) ? e.with_indifferent_access : e }
-          else
-            value
-          end
+      def convert_key(key)
+        key.is_a?(Symbol) ? key.to_s : key
+      end
+
+      def convert_value(value)
+        case value
+        when Hash
+          value.with_indifferent_access
+        when Array
+          value.collect { |e| e.is_a?(Hash) ? e.with_indifferent_access : e }
+        else
+          value
         end
+      end
     end
 
-    module HashIndifferentAccess #:nodoc:
+    module HashIndifferentAccess # :nodoc:
       def with_indifferent_access
         hash = HashWithIndifferentAccess.new(self)
-        hash.default = self.default
+        hash.default = default
         hash
       end
     end
 
-    class ::Hash #:nodoc:
+    class ::Hash # :nodoc:
       unless respond_to?(:with_indifferent_access)
         include Throttling::HashIndifferentAccess
       end

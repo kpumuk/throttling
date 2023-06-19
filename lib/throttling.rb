@@ -1,5 +1,5 @@
-require 'logger'
-require 'yaml'
+require "logger"
+require "yaml"
 
 # Simple throttling library to limit number of actions in time.
 module Throttling
@@ -8,7 +8,7 @@ module Throttling
     # (if it is a Rails application).
     def storage
       @@storage ||= (defined?(Rails) && Rails.respond_to?(:cache) && Rails.cache) || nil
-      raise ArgumentError, 'Throttling.storage is not specified' unless @@storage
+      raise ArgumentError, "Throttling.storage is not specified" unless @@storage
       @@storage
     end
 
@@ -25,7 +25,7 @@ module Throttling
 
     # Gets the logger used to output errors or warnings.
     def logger
-      @@logger ||= (defined?(Rails) && Rails.respond_to(:logger) && Rails.logger) || Logger.new(STDOUT)
+      @@logger ||= (defined?(Rails) && Rails.respond_to(:logger) && Rails.logger) || Logger.new($stdout)
     end
 
     # Sets the logger used to output errors or warnings.
@@ -52,14 +52,14 @@ module Throttling
 
     # Sets current throttling limits.
     def limits=(limits)
-      @@limits = limits && limits.with_indifferent_access
+      @@limits = limits&.with_indifferent_access
     end
 
     # Get the value indicating whether throttling is enabled.
     def enabled?
       !!@@enabled
     end
-    alias :enabled :enabled?
+    alias_method :enabled, :enabled?
 
     # Sets the value indicating whether throttling is enabled.
     def enabled=(enabled)
@@ -83,14 +83,14 @@ module Throttling
 
     # Resets all values to their default state (mostly for testing purpose).
     def reset_defaults!
-      @@enabled       = true
-      @@logger        = nil
-      @@storage       = nil
+      @@enabled = true
+      @@logger = nil
+      @@storage = nil
       @@limits_config = nil
 
       # Internal variables
-      @@instances     = {}
-      @@config        = nil
+      @@instances = {}
+      @@config = nil
     end
 
     private
@@ -104,6 +104,6 @@ module Throttling
   reset_defaults!
 end
 
-require 'throttling/indifferent_access'
-require 'throttling/base'
+require "throttling/indifferent_access"
+require "throttling/base"
 require "throttling/version"

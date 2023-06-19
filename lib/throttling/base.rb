@@ -15,7 +15,7 @@ module Throttling
         if @limits[:values]
           @limits[:values] = @limits[:values].sort_by { |name, params| params && params[:limit] }
         end
-        @limits = [[ 'global', @limits ]]
+        @limits = [["global", @limits]]
       else
         @limits = @limits.sort_by { |name, params| params && params[:period] }
       end
@@ -35,7 +35,7 @@ module Throttling
 
       limits.each do |period_name, params|
         period = params[:period].to_i
-        limit  = params[:limit].nil? ? nil : params[:limit].to_i
+        limit = params[:limit]&.to_i
         values = params[:values]
 
         raise ArgumentError, "Invalid or no 'period' parameter in the limits[#{action}][#{period_name}] config: #{limit.inspect}" if period < 1
@@ -44,7 +44,7 @@ module Throttling
         key = hits_store_key(check_type, check_value, period_name, period)
 
         # Retrieve current value
-        hits = Throttling.storage.fetch(key, :expires_in => hits_store_ttl(period), :raw => true) { '0' }.to_i
+        hits = Throttling.storage.fetch(key, expires_in: hits_store_ttl(period), raw: true) { "0" }.to_i
 
         if values
           value = params[:default_value] || false
@@ -54,16 +54,16 @@ module Throttling
               break
             end
           end
-        else
+        elsif !limit.nil? && hits >= limit
           # Over limit?
-          return false if !limit.nil? && hits >= limit
+          return false
         end
 
         Throttling.storage.increment(key) if auto_increment
         return value if values
       end
 
-      return true
+      true
     end
 
     private
