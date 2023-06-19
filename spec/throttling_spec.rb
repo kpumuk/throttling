@@ -1,10 +1,6 @@
 require "spec_helper"
 
 RSpec.describe Throttling do
-  after :each do
-    Throttling.reset_defaults!
-  end
-
   context "with defaults" do
     it "should create logger" do
       expect(Throttling.logger).to be_a(Logger)
