@@ -2,7 +2,6 @@ require "spec_helper"
 
 RSpec.describe Throttling do
   before do
-    Throttling.reset_defaults!
     @storage = Throttling.storage = TestStorage.new
   end
 

@@ -62,6 +62,11 @@ RSpec.configure do |config|
   # as the one that triggered the failure.
   Kernel.srand config.seed
 
+  # Reset Throttling configuration after every spec.
+  config.after do
+    Throttling.reset_defaults!
+  end
+
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.
