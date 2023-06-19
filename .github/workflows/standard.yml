@@ -2,14 +2,10 @@ name: StandardRB
 
 on:
   push:
-    branches: [main]
+    # branches: [main]
   pull_request:
     types: [opened, reopened]
-    branches: [main]
-  workflow_run:
-    workflows: ["Update"]
-    types:
-      - completed
+    # branches: [main]
 
 jobs:
   build:
