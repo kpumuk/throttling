@@ -1,6 +1,6 @@
 # Throttling
 
-[![Tests](https://github.com/kpumuk/throttling/actions/workflows/tests.yml/badge.svg)](https://github.com/kpumuk/throttling/actions/workflows/test.yml)
+[![Tests](https://github.com/kpumuk/throttling/actions/workflows/tests.yml/badge.svg)](https://github.com/kpumuk/throttling/actions/workflows/tests.yml)
 [![Gem Version](https://badge.fury.io/rb/throttling.svg)](https://badge.fury.io/rb/throttling)
 [![Gem Downloads](https://img.shields.io/gem/dt/throttling.svg)](https://badge.fury.io/rb/throttling)
 [![Changelog](https://img.shields.io/badge/Changelog-latest-blue.svg)](https://github.com/kpumuk/throttling/blob/main/CHANGELOG.md)
@@ -19,7 +19,7 @@ And run `bundle install` command.
 
 ## Configuration
 
-You can configure Throttling parameters by accessing attributes of `Throttling` module. Currently it supports only Memcached through `Rails.cache`.
+You can configure Throttling parameters by accessing attributes of `Throttling` module. Currently it supports only Memcached and Redis through `Rails.cache`.
 
 ```ruby
 Throttling.storage = Rails.cache
@@ -89,8 +89,8 @@ Throttling.limits = {
   },
   search_requests: {
     minutely: {
-      :limit  => 20,
-      :period => 3600
+      limit: 20,
+      period: 3600
     },
     hourly: {
       limit: 1000,
@@ -156,7 +156,7 @@ user_signup:
 Limit the number of sign-ups to 20 per hour per IP address:
 
 ```ruby
-Throttling.for('user_signup').check_ip(request.remote_ip)
+Throttling.for("user_signup").check_ip(request.remote_ip)
 ```
 
 ### Limiting number of document uploads
@@ -178,7 +178,7 @@ In this case user will be allowed to upload 5 documents in 10 minutes, 10 docume
 in an hour, or 50 documents a day:
 
 ```ruby
-Throttling.for('document_uploads').check_user_id(current_user.id)
+Throttling.for("document_uploads").check_user_id(current_user.id)
 ```
 
 ### Prioritizing uploads based on number of uploads
@@ -205,7 +205,7 @@ less than 5 documents a day, they all will have priority 10. Next 10 documents
 16 to 100 will get priority 20, and everything else will get priority 25.
 
 ```ruby
-Throttling.for('document_priorities').check_user_id(current_user.id)
+Throttling.for("document_priorities").check_user_id(current_user.id)
 ```
 
 ## Contributing
