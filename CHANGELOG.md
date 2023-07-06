@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.4.0 (Development)
+## 0.4.0 (July 6, 2023)
 
 - Bump minimum Ruby requirement to 2.7.0
 - Updated codebase to match StandardRB style guide
