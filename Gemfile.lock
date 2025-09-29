@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    throttling (0.4.0)
+    throttling (0.4.1)
 
 GEM
   remote: https://rubygems.org/
