@@ -2,26 +2,24 @@ name: StandardRB
 
 on:
   push:
-    # branches: [main]
+    branches: [main]
   pull_request:
-    types: [opened, reopened]
-    # branches: [main]
+    branches: [main]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    permissions:
+      checks: write
+      contents: read
+    strategy:
+      fail-fast: true
+      matrix:
+        ruby-version:
+          - "3.4"
     steps:
-      - uses: actions/checkout@v4
-      - name: Set up Ruby 3.2
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 3.2.0
-          bundler-cache: true
-      - name: Install gems
-        run: |
-          bundle config path vendor/bundle
-          bundle check || (bundle install --jobs=4 --retry=3 && bundle clean)
       - name: Run StandardRB
-        run: |
-          bundle exec standardrb
+        uses: standardrb/standard-ruby-action@v1
+        with:
+          ruby-version: ${{ matrix.ruby-version }}
+          autofix: false
