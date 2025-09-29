@@ -19,10 +19,10 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_development_dependency "rake", "~> 13.0"
-  spec.add_development_dependency "rspec", "~> 3.12.0"
+  spec.add_development_dependency "rspec", "~> 3.13.0"
   spec.add_development_dependency "timecop", "~> 0.9.6"
   # Code style
-  spec.add_development_dependency "standard", "~> 1.29.0"
+  spec.add_development_dependency "standard", "~> 1.51.0"
 
   spec.cert_chain = ["certs/kpumuk.pem"]
   spec.signing_key = File.expand_path("~/.ssh/gem-kpumuk.pem") if $PROGRAM_NAME.end_with?("gem")
