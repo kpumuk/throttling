@@ -15,7 +15,7 @@ module Throttling
           super()
           update(constructor)
         else
-          super(constructor)
+          super
         end
       end
 
@@ -101,7 +101,7 @@ module Throttling
       # Performs the opposite of merge, with the keys and values from the first hash taking precedence over the second.
       # This overloaded definition prevents returning a regular hash, if reverse_merge is called on a HashWithDifferentAccess.
       def reverse_merge(other_hash)
-        super other_hash.with_indifferent_access
+        super(other_hash.with_indifferent_access)
       end
 
       # Removes a specified key from the hash.
