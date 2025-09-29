@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.1 (September 19, 2025)
+
+- Multiple rexml fixes ([6](https://github.com/kpumuk/throttling/pull/6), [7](https://github.com/kpumuk/throttling/pull/7), [8](https://github.com/kpumuk/throttling/pull/8), [9](https://github.com/kpumuk/throttling/pull/9), [11](https://github.com/kpumuk/throttling/pull/11/))
+- Use GitHub actions to build, sign and publish the gem ([11](https://github.com/kpumuk/throttling/pull/11/))
+
 ## 0.4.0 (July 6, 2023)
 
 - Bump minimum Ruby requirement to 2.7.0
